@@ -8,9 +8,10 @@ const IngredientForm = React.memo(props => {
                                                                           //destructure the returned array so that the state(data) and set state function are stored seperately
  const [enteredTitle, setEnteredTitle] = useState(''); //instead of having state in an object and having to keep track of each, can have multiple states for each and only track each as needed
  const [enteredAmount, setEnteredAmount] = useState('');
+
   const submitHandler = event => {
     event.preventDefault();
-    // ...
+    props.onAddIngredient({title: enteredTitle, amount: enteredAmount});
   };
 
   return (

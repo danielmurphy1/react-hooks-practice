@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from 'react';
+import React, { useState, useEffect, useCallback }  from 'react';
 
 import IngredientForm from './IngredientForm';
 import IngredientList from './IngredientList';
@@ -8,44 +8,46 @@ import axios from 'axios';
 function Ingredients() {
   const [ ingredients, setIngredients] = useState([]); 
 
-  useEffect(() => {
-    // fetch('https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients.json').then(
-    //   response =>response.json()).then(
-    //   responseData => {
-    //     const loadedIngredients = [];
-    //     console.log(responseData)
+  // useEffect(() => {
+  //   // fetch('https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients.json').then(
+  //   //   response =>response.json()).then(
+  //   //   responseData => {
+  //   //     const loadedIngredients = [];
+  //   //     console.log(responseData)
 
-    //     for (const key in responseData ){
-    //       loadedIngredients.push({
-    //         id: key, 
-    //         title: responseData[key].title, 
-    //         amount: responseData[key].amount
-    //       });
-    //     }
-    //     setIngredients(loadedIngredients);
-    //      console.log(loadedIngredients)
-    //   });
-    axios.get('https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients.json').then(
+  //   //     for (const key in responseData ){
+  //   //       loadedIngredients.push({
+  //   //         id: key, 
+  //   //         title: responseData[key].title, 
+  //   //         amount: responseData[key].amount
+  //   //       });
+  //   //     }
+  //   //     setIngredients(loadedIngredients);
+  //   //      console.log(loadedIngredients)
+  //   //   });
+  //   axios.get('https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients.json').then(
       
-        responseData => {
-        const loadedIngredients = [];
-        console.log(responseData.data)
-        for (const key in responseData.data){
-          loadedIngredients.push({
-            id: key, 
-            title: responseData.data[key].title, 
-            amount: responseData.data[key].amount
-          })
-        }
-        setIngredients(loadedIngredients);
-      console.log(loadedIngredients)
-      }
-    )
-  }, []);
+  //       responseData => {
+  //       const loadedIngredients = [];
+  //       console.log(responseData.data)
+  //       for (const key in responseData.data){
+  //         loadedIngredients.push({
+  //           id: key, 
+  //           title: responseData.data[key].title, 
+  //           amount: responseData.data[key].amount
+  //         })
+  //       }
+  //       setIngredients(loadedIngredients);
+  //     console.log(loadedIngredients)
+  //     }
+  //   )
+  // }, []);
 
-  const filteredIngredientsHandler = filteredIngredients => {
+  //getting rid of the above useEffect gets rid of an extra render cycle - rendered in the Search.js
+
+  const filteredIngredientsHandler = useCallback(filteredIngredients => {
     setIngredients(filteredIngredients)
-  }
+  }, []); //useCallback caches the function so that in re-reder cycvles the funciton is only recreated if a dependecy changes and therefore not passed as a new function (props) to the Search component
 
   useEffect(() =>{
     console.log("Rendering ingredients", ingredients)

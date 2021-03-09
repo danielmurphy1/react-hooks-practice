@@ -22,7 +22,7 @@ const Search = React.memo(props => {
             amount: responseData.data[key].amount
           })
         }
-        // onLoadIngredients(loadedIngredients);
+        onLoadIngredients(loadedIngredients);
       console.log(loadedIngredients)
     // fetch('https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients.json' + query).then(
     //   response =>response.json()).then(

@@ -70,7 +70,14 @@ function Ingredients() {
   };
 
   const removeIngredientHandler = ingredientID => {
-    setIngredients(prevIngredients => prevIngredients.filter(ingredient => ingredient.id !== ingredientID))
+    // fetch(`https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients/${ingredientID}.json`, {      //deleting using browser fetch
+    //   method: 'DELETE'
+    // }).then(response => {
+    //   setIngredients(prevIngredients => prevIngredients.filter(ingredient => ingredient.id !== ingredientID))
+    // })
+
+    axios.delete(`https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients/${ingredientID}.json`) //delete using axios
+    .then(setIngredients(prevIngredients => prevIngredients.filter(ingredient => ingredient.id !== ingredientID)))
   }
 
   return (

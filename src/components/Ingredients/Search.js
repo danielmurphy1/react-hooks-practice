@@ -10,7 +10,7 @@ const Search = React.memo(props => {
   const inputRef = useRef(); //assign to a DOM element to know what the value will be (this case the text <input>)
 
   useEffect(() => {
-    setTimeout(() =>{         //use setTimeout to check if the useEffect dependecy has stopped for an amount of time so that the http req is only sent then and not each keystroke for enteredFilter
+    const timer = setTimeout(() =>{         //use setTimeout to check if the useEffect dependecy has stopped for an amount of time so that the http req is only sent then and not each keystroke for enteredFilter
       if (enteredFilter === inputRef.current.value) { //enteredFilter will be the value when the time is set (on the render) because of JS closures - not the value at end of 500ms. 
                                                       //Need reference (useRef) to compare to current value. inputRef.current.value will be the current value after 500ms in the <input>
         const query = enteredFilter.length === 0 ? '' : `?orderBy="title"&equalTo="${enteredFilter}"`;
@@ -49,7 +49,10 @@ const Search = React.memo(props => {
       }                                                
       
     }, 500);
-
+    return () => { //if use a return, must be a function. Called a cleanup function. Runs RIGHT BEFORE component render cycle (due to dependencies). 
+                  //If no dependencies, will run when component is UNMOUNTED
+      clearTimeout(timer); //clears the timer that is created with previous keystoke so there are not multiple timers running
+    }
     
   }, [enteredFilter, onLoadIngredients, inputRef])
 

@@ -1,5 +1,5 @@
 import React from 'react';
-
+import LoadingIndicator from '../UI/LoadingIndicator';
 import './IngredientList.css';
 
 const IngredientList = props => {

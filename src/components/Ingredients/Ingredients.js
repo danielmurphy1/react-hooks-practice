@@ -66,11 +66,15 @@ function Ingredients() {
     //   return response.json();
     // }).then(responseData => {
     //   setIngredients(prevIngredients => [...prevIngredients, {id: responseData.name, ...ingredient}]);
-    // });
+    // }).catch(error => {
+    //  setError("Something went wrong" + " " + error.message)
+    //});
     axios.post('https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients.json', ingredient)    //using axios
       .then(responseData => {
         setIsLoading(false);
         setIngredients(prevIngredients => [...prevIngredients, {id: responseData.name, ...ingredient}]);
+      }).catch(error => {
+        setError("Something went wrong" + " " + error.message)
       })
   };
 

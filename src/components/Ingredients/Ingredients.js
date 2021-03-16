@@ -19,12 +19,28 @@ const ingredientReducer = (currentIngredients, action) => { //first arg is the s
   }
 }
 
+const httpReducer = (curHttpState, action) => {
+  switch (action.type){
+    case "SEND":
+      return {loading: true, error: null};
+    case "Response":
+      return { ...curHttpState, loading: false};
+    case "Error":
+      return { loading: false, error: action.errorMessage};
+    case "Clear":
+      return {...curHttpState, error: null};
+    default:
+      throw new Error ("Should not be reached");
+  }
+}
+
 function Ingredients() {
   const [ingredients, dispatch] = useReducer(ingredientReducer, []) //useReducertakes arguemnst of reducer function and starting state - here empty array being based as currentIngredients
                                                                     //the destructed variables are the state and the funciton to call to dispatch the actions in the reducer function (ingredientReducer)
   // const [ ingredients, setIngredients] = useState([]); 
-  const [isLoading, setIsLoading ] = useState(false);
-  const [error, setError] = useState();
+  const [httpState, dispatchHttp] = useReducer(httpReducer, {loading: false, error: null});
+  // const [isLoading, setIsLoading ] = useState(false);
+  // const [error, setError] = useState();
 
   // useEffect(() => {
   //   // fetch('https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients.json').then(
@@ -64,7 +80,7 @@ function Ingredients() {
   //getting rid of the above useEffect gets rid of an extra render cycle - rendered in the Search.js
 
   const filteredIngredientsHandler = useCallback(filteredIngredients => {
-    // setIngredients(filteredIngredients)
+    // setIngredients(filteredIngredients) replace with ingredient reducer
     dispatch({type: "SET", ingredients: filteredIngredients});
   }, []); //useCallback caches the function so that in re-reder cycvles the funciton is only recreated if a dependecy changes and therefore not passed as a new function (props) to the Search component
 
@@ -73,7 +89,8 @@ function Ingredients() {
   }, [ingredients]);
 
   const addIngredientHandler = ingredient => { 
-    setIsLoading(true);
+    // setIsLoading(true); replacing with http reducer
+    dispatchHttp({type: "SEND"});
     // fetch('https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients.json', {      //posting using browser fetch
     //   method: 'POST', 
     //   body: JSON.stringify({ingredient}), 
@@ -87,16 +104,19 @@ function Ingredients() {
     //});
     axios.post('https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients.json', ingredient)    //using axios
       .then(responseData => {
-        setIsLoading(false);
-        // setIngredients(prevIngredients => [...prevIngredients, {id: responseData.name, ...ingredient}]);
+        // setIsLoading(false); replace with http reducer
+        dispatchHttp({type: "Response"})
+        // setIngredients(prevIngredients => [...prevIngredients, {id: responseData.name, ...ingredient}]); replace with ingredient reducer
         dispatch({type: "ADD", ingredient: {id: responseData.name, ...ingredient}})
       }).catch(error => {
-        setError("Something went wrong" + " " + error.message)
+        // setError("Something went wrong" + " " + error.message) replace with http reducer
+        dispatchHttp({type: "Error", errorMessage: "Something went wrong" + " " + error.message})
       })
   };
 
   const removeIngredientHandler = ingredientID => {
-    setIsLoading(true);
+    // setIsLoading(true); replace with http reducer
+    dispatchHttp({type: "SEND"});
     // fetch(`https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients/${ingredientID}.json`, {      //deleting using browser fetch
     //   method: 'DELETE'
     // }).then(response => {
@@ -110,22 +130,25 @@ function Ingredients() {
     .then(() => {
       // setIngredients(prevIngredients => prevIngredients.filter(ingredient => ingredient.id !== ingredientID));
       dispatch({type: "DELETE", id: ingredientID});
-      setIsLoading(false);
+      // setIsLoading(false); replace with http reducer
+      dispatchHttp({type: "Response"})
     }).catch(error => {
-      setError("Something went wrong" + " " + error.message)
+      // setError("Something went wrong" + " " + error.message) replace with http reducer
+      dispatchHttp({type: "Error", errorMessage: "Something went wrong" + " " + error.message})
     })
   }
 
   const clearError = () => { //batching - state updates in same SYNCHRONOUS block are batched together as to not cause multiple renders 
                             //- cannot use new state immediately after setting - only available to use AFTER next render cycle
-    setError(null);
-    setIsLoading(false);
+    // setError(null); replace with http reducer
+    // setIsLoading(false);
+    dispatchHttp({type: "Clear"})
   }
 
   return (
     <div className="App">
-    {error && <ErrorModal onClose={clearError}>{error}</ErrorModal>} 
-      <IngredientForm onAddIngredient={addIngredientHandler} isLoading={isLoading}/>
+    {httpState.error && <ErrorModal onClose={clearError}>{httpState.error}</ErrorModal>} 
+      <IngredientForm onAddIngredient={addIngredientHandler} isLoading={httpState.loading}/>
 
       <section>
         <Search onLoadIngredients={filteredIngredientsHandler}/>

@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import Card from './UI/Card';
+import { AuthContext } from '../context/auth-context';
 import './Auth.css';
 
 const Auth = props => {
-  const loginHandler = () => {};
+  const authContext = useContext(AuthContext); //set varaible to AuthContext object from auth-context
+
+  const loginHandler = () => {
+    authContext.login();  //the login method on the AuthContext object from auth-context - method must be called with ()
+  };
 
   return (
     <div className="auth">

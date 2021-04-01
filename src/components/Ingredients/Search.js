@@ -41,7 +41,7 @@ const Search = React.memo(props => {
       //         amount: responseData[key].amount
       //       });
       //     }
-      //     // onLoadIngredients(loadedIngredients);
+      //     onLoadIngredients(loadedIngredients);
   
       //      console.log(loadedIngredients)
         }

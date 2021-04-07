@@ -96,7 +96,7 @@ function Ingredients() {
   }, [data, reqExtra, reqIdentifier, isLoading, error]);
 
   const addIngredientHandler = ingredient => { 
-    sendRequest('https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients.json', 'POST', JSON.stringify({ingredient}), ingredient, 'ADD_INGREDIENT');
+    sendRequest('https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients.json', 'POST', JSON.stringify(ingredient), ingredient, 'ADD_INGREDIENT');
     // setIsLoading(true); replacing with http reducer
     // dispatchHttp({type: "SEND"});
     // // fetch('https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients.json', {      //posting using browser fetch

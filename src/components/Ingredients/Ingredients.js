@@ -38,7 +38,7 @@ const ingredientReducer = (currentIngredients, action) => { //first arg is the s
 function Ingredients() {
   const [ingredients, dispatch] = useReducer(ingredientReducer, []) //useReducertakes arguemnst of reducer function and starting state - here empty array being based as currentIngredients
                                                                     //the destructed variables are the state and the funciton to call to dispatch the actions in the reducer function (ingredientReducer)
-  const { isLoading, error, data, sendRequest, reqExtra, reqIdentifier } = useHttp();
+  const { isLoading, error, data, sendRequest, reqExtra, reqIdentifier, clear } = useHttp();
   // const [ ingredients, setIngredients] = useState([]); 
   // const [httpState, dispatchHttp] = useReducer(httpReducer, {loading: false, error: null}); // move to http.js for custom hook
   // const [isLoading, setIsLoading ] = useState(false);
@@ -95,7 +95,7 @@ function Ingredients() {
     }
   }, [data, reqExtra, reqIdentifier, isLoading, error]);
 
-  const addIngredientHandler = ingredient => { 
+  const addIngredientHandler = useCallback(ingredient => { 
     sendRequest('https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients.json', 'POST', JSON.stringify(ingredient), ingredient, 'ADD_INGREDIENT');
     // setIsLoading(true); replacing with http reducer
     // dispatchHttp({type: "SEND"});
@@ -120,7 +120,7 @@ function Ingredients() {
     //     // setError("Something went wrong" + " " + error.message) replace with http reducer
     //     dispatchHttp({type: "Error", errorMessage: "Something went wrong" + " " + error.message})
     //   })
-  };
+  }, [sendRequest]);
 
   const removeIngredientHandler = useCallback(ingredientID => {
     sendRequest(`https://react-hooks-practice-62927-default-rtdb.firebaseio.com/ingredients/${ingredientID}.json`, 'DELETE', null, ingredientID, 'REMOVE_INGREDIENT'); //custom useHttp Hook object destructured
@@ -147,12 +147,13 @@ function Ingredients() {
     // })
   }, [sendRequest]);
 
-  const clearError = () => { //batching - state updates in same SYNCHRONOUS block are batched together as to not cause multiple renders 
+  const clearError = useCallback(() => { //batching - state updates in same SYNCHRONOUS block are batched together as to not cause multiple renders 
                             //- cannot use new state immediately after setting - only available to use AFTER next render cycle
     // setError(null); replace with http reducer
     // setIsLoading(false);
     // dispatchHttp({type: "Clear"})
-  }
+    clear();
+  }, []);
 
   return (
     <div className="App">
